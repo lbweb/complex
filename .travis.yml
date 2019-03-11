@@ -1,0 +1,22 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t lbweb/complex -f ./client/Dockerfile.dev ./client
+
+  script:
+  - docker run lbweb/complex npm test -- --coverage
+
+after_success: 
+  - docker build -t lukeboerdam/multi-client ./client
+  - docker build -t lukeboerdam/multi-nginx ./nginx 
+  - docker build -t lukeboerdam/multi-server ./server
+  - docker build -t lukeboerdam/multi-worker ./worker 
+#Log In to Docker Hub CLI 
+ - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+#Push to Docker Hub 
+ - docker push lukeboerdam/multi-client
+ - docker push lukeboerdam/multi-nginx
+ - docker push lukeboerdam/multi-server
+ - docker push lukeboerdam/multi-worker
