@@ -5,7 +5,7 @@ services:
 before_install:
   - docker build -t lbweb/complex -f ./client/Dockerfile.dev ./client
 
-  script:
+script:
   - docker run lbweb/complex npm test -- --coverage
 
 after_success: 
